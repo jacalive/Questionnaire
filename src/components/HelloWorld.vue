@@ -1,5 +1,9 @@
 <template>
-  <div class="hello">
+  <div>
+        <div v-if="show" class="notification is-primary">
+      提交成功
+  <button @click="message()" class="delete"></button>
+</div>
     <section class="hero">
       <div class="hero-body">
         <div class="container has-text-centered">
@@ -168,9 +172,9 @@
     <footer class="footer">
       <div class="content has-text-centered">
         <p>
-          <strong>Bulma</strong> by <a href="https://jgthms.com">Jeremy Thomas</a>. The source code is licensed
-          <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
-          is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+          <p><strong>Bulma</strong> </p>
+          <p><strong>Vuejs</strong> by Evan You.</p>
+          <a href="https://github.com/jacalive/Questionnaire">github address</a>.
         </p>
       </div>
     </footer>
@@ -178,9 +182,9 @@
 </template>
 
 <script>
-require ('./../assets/axios.min.js')
 require ('./../assets/fontawesome')
 require ('./../assets/bulma.min.css')
+const axios = require('axios').default;
 export default {
   name: 'HelloWorld',
   data () {
@@ -193,7 +197,8 @@ export default {
       appearance:'',
       performance:'',
       changes:{appearance:'no', performance:'no', photograph:'no', thickness:'no'},
-      idea: ''
+      idea: '',
+      show:false
     }
   },
   mounted(){
@@ -202,39 +207,50 @@ export default {
   methods:{
     submitForm(){
           let that = this
+          if(!that.name){
+            alert("姓名不能为空")
+            return
+          }
+          if(!that.phone){
+            alert("手机号不能为空")
+            return
+          }
+          if(!that.depart){
+            alert("部门不能为空")
+            return
+          }
+          if(!that.appearance){
+            alert("外观评价不能为空")
+            return
+          }
+          if(!that.performance){
+            alert("性能评价不能为空")
+            return
+          }
           const formData = {
               name: that.name,
               phone: that.phone,
               depart: that.depart,
               appearance:that.appearance,
               performance:that.performance,
-              changes: that.changes,
+              changes: JSON.stringify(that.changes),
               idea: that.idea
 
           }
           console.log(formData)
-          axios.post('https://veg.kim/api/v1/forms', formData).then(response => {
-              console.log(`response.data`)
+          axios.post('https://sign.veg.kim/api/v1/formPhone', formData).then(response => {
+              console.log(response.data)
+              this.show = true
           })
-      }
+      },
+    message(){
+      this.show=false
+
+    }
     }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+<style>
+
 </style>
